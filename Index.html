@@ -1,253 +1,179 @@
-<!DOCTYPE html>
+                                <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBD Widia Novita Sari 🎀</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Varela+Round&display=swap" rel="stylesheet">
+    <title>Yazstore - Katalog Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-soft: #ffc2d1;
-            --pink-dark: #fb6f92;
-            --cream: #fff5f5;
+            --blue-dora: #00A0E9;
+            --blue-dark: #007bb5;
+            --yellow-nobi: #FFD200;
         }
-
-        * { box-sizing: border-box; }
 
         body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f4f7f9;
             margin: 0; padding: 0;
-            font-family: 'Varela Round', sans-serif;
-            background-color: var(--pink-soft);
-            color: #555;
-            overflow-x: hidden;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh;
-            transition: all 0.5s ease;
         }
 
-        /* Background Hiasan Awan */
-        .decorations {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; pointer-events: none;
+        header {
+            background: linear-gradient(135deg, var(--blue-dora), var(--blue-dark));
+            color: white; padding: 40px 20px; text-align: center;
+            border-bottom: 6px solid var(--yellow-nobi);
         }
 
-        /* Container Utama */
-        .container {
-            width: 90%; max-width: 450px;
-            z-index: 10;
-        }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
 
         .card {
-            background: white;
-            padding: 30px; border-radius: 30px;
-            box-shadow: 0 15px 30px rgba(251, 111, 146, 0.2);
-            text-align: center;
-            border: 4px solid #fff;
-            display: none;
-            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: white; border-radius: 20px; padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 2px solid transparent;
+            display: flex; flex-direction: column; transition: 0.3s;
         }
 
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.3); }
-            100% { opacity: 1; transform: scale(1); }
+        .card:hover { border-color: var(--blue-dora); transform: translateY(-5px); }
+        .card h3 { margin: 0 0 15px; color: var(--blue-dark); font-size: 1.1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+
+        select { width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #f0f0f0; margin-bottom: 15px; font-family: inherit; }
+
+        .btn-order {
+            background: var(--blue-dora); color: white; border: none;
+            padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer;
         }
 
-        /* Tombol Berdampingan (Flexbox No-Wrap) */
-        .btn-row {
-            display: flex;
-            flex-direction: row; /* Wajib ke samping */
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            width: 100%;
+        /* MODAL PEMBAYARAN */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
         }
 
-        button {
-            padding: 12px 15px;
-            border: none; border-radius: 20px;
-            font-size: 0.9rem; font-weight: bold;
-            cursor: pointer; transition: 0.3s;
-            flex: 1; /* Ukuran sama rata */
-            font-family: 'Varela Round', sans-serif;
-            box-shadow: 0 4px 0 #e0e0e0;
+        .modal-content {
+            background: white; width: 90%; max-width: 420px; margin: 20px auto;
+            padding: 25px; border-radius: 25px; text-align: center; border: 4px solid var(--blue-dora);
+            max-height: 90vh; overflow-y: auto; /* Agar bisa di-scroll di HP kecil */
         }
 
-        .btn-yes { background-color: var(--pink-dark); color: white; box-shadow: 0 4px 0 #d04e6d; }
-        .btn-yes:active { transform: translateY(4px); box-shadow: none; }
-        
-        .btn-no { background-color: #eee; color: #888; position: relative; }
+        .modal-content img { width: 100%; border-radius: 15px; margin: 15px 0; border: 1px solid #ddd; }
 
-        /* Halaman Final (Bisa Scroll) */
-        #page-final {
-            background: var(--cream);
-            width: 100%; max-width: 500px;
-            margin: 20px auto; padding: 40px 20px;
-            border-radius: 40px;
-            display: none;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .fee-info {
+            background: #fff1f1; color: #d32f2f; padding: 10px; border-radius: 10px;
+            font-weight: 800; margin-bottom: 15px; font-size: 0.9rem; border: 1px solid #ffcccc;
         }
 
-        .profile-frame {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 30px;
-        }
-        .profile-img {
-            width: 220px; height: 220px; border-radius: 30px;
-            object-fit: cover; border: 8px solid white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transform: rotate(-3deg);
-        }
-
-        .title-hbd {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3rem; color: var(--pink-dark);
-            margin: 10px 0;
+        /* TOMBOL WHATSAPP YANG HILANG TADI */
+        .wa-btn {
+            display: block !important; /* Memastikan tombol muncul */
+            background: #25D366 !important;
+            color: white !important;
+            text-decoration: none !important;
+            padding: 16px !important;
+            border-radius: 15px !important;
+            font-weight: 800 !important;
+            font-size: 1.1rem !important;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            margin: 10px 0 20px 0;
+            transition: 0.3s;
         }
 
-        .scroll-hint {
-            font-size: 0.8rem; color: var(--pink-dark);
-            margin-bottom: 50px; animation: bounce 2s infinite;
-        }
+        .wa-btn:hover { background: #1ebd59 !important; transform: scale(1.02); }
 
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+        .close-link { display: block; margin-top: 10px; color: #aaa; cursor: pointer; font-size: 0.8rem; text-decoration: underline; }
 
-        /* Puisi Panjang */
-        .poem-section {
-            background: white; padding: 30px 20px;
-            border-radius: 30px; line-height: 2;
-            font-style: italic; color: #666;
-            margin-top: 40px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-        }
-
-        .floating-heart {
-            position: fixed; font-size: 1.5rem;
-            pointer-events: none; z-index: 1000;
-            animation: floatUp 4s linear forwards;
-        }
-        @keyframes floatUp {
-            to { transform: translateY(-110vh) translateX(20px); opacity: 0; }
-        }
+        footer { text-align: center; padding: 50px; color: #aaa; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="decorations" id="decorations"></div>
+<header>
+    <h1>YAZSTORE</h1>
+    <p>Premium Account • Hosting • Digital Services</p>
+</header>
 
-    <div id="page-1" class="container">
-        <div class="card" style="display: block;">
-            <h1 style="font-size: 4rem; margin: 0;">🎀</h1>
-            <h2 style="color: var(--pink-dark);">Ada Paketan!</h2>
-            <p>Seseorang mengirimkan hadiah digital untuk <b>Kak Widia Novita Sari</b>. Mau buka sekarang?</p>
-            <div class="btn-row">
-                <button class="btn-yes" onclick="showPage(2)">Buka Paket</button>
-                <button class="btn-no" onclick="alert('Eits, gabisa ditolak!')">Nanti Saja</button>
-            </div>
+<div class="container">
+    <div class="grid" id="productGrid">
         </div>
-    </div>
+</div>
 
-    <div id="page-2" class="container">
-        <div class="card" id="card-prank" style="display: block;">
-            <h2 style="color: var(--pink-dark);">Verifikasi Keimutan</h2>
-            <p>Sebelum dibuka, konfirmasi dulu:<br>Apakah Kak Widia merasa imut hari ini?</p>
-            <div class="btn-row">
-                <button class="btn-yes" onclick="startSurprise()">Iya, Imut!</button>
-                <button id="btn-no" class="btn-no" onmouseover="dodge()">Enggak</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="page-final">
-        <div class="profile-frame">
-            <img src="https://o.uguu.se/yOJSjswO.jpg" class="profile-img" alt="Widia">
-            <div style="position: absolute; bottom: -10px; right: -10px; font-size: 3rem;">🎂</div>
-        </div>
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <h2 style="color: var(--blue-dora); margin: 0; font-size: 1.5rem;">PEMBAYARAN</h2>
+        <p id="desc" style="font-weight: 800; color: #333; margin: 10px 0;"></p>
         
-        <h1 class="title-hbd">Selamat Ulang Tahun</h1>
-        <h3 style="letter-spacing: 2px; color: #888;">Widya Novita Sari</h3>
-        <div style="background: var(--pink-dark); color: white; display: inline-block; padding: 5px 15px; border-radius: 15px; font-weight: bold; margin-bottom: 10px;">23 Tahun</div>
+        <img src="https://autoresbot.com/tmp_files/7e8fe096-7664-4af2-949e-844f0e34e4a7.jpg" alt="QRIS Yazstore">
         
-        <div class="scroll-hint">Scroll ke bawah ya.. ↓</div>
-
-        <div class="poem-section">
-            "Di lembaran baru usiamu yang kedua puluh tiga,<br>
-            Ada doa yang diam-diam aku angkasa.<br>
-            Bukan hanya tentang lilin yang menyala di atas kue,<br>
-            Tapi tentang cahaya yang selalu ada di dalam dirimu.<br><br>
-            
-            Semoga langkahmu selalu seringan awan,<br>
-            Harimu secerah pelangi setelah hujan.<br>
-            Tetaplah menjadi Widia yang penuh tawa,<br>
-            Karena senyummu adalah hadiah bagi dunia.<br><br>
-
-            Jadilah hebat dengan caramu sendiri,<br>
-            Sebab di mata kami, kau sudah sangat berarti.<br>
-            Selamat ulang tahun, bahagia selalu!"
+        <div class="fee-info">
+            FEE QRIS +50 PERAK (WAJIB)<br>
+            NO FEE = TIDAK DIPROSES
         </div>
 
-        <div style="margin-top: 50px; padding: 20px; background: #fff; border-radius: 20px; font-size: 0.9rem;">
-            🎀 <b>Harapan Kecil:</b><br>
-            Semoga di usia 23 ini semua impianmu <br>
-            terkabul satu per satu! ✨
-        </div>
-
-        <p style="margin-top: 50px; opacity: 0.5;">With Love ❤️</p>
+        <a href="#" id="waLink" class="wa-btn">KIRIM BUKTI TRANSFER</a>
+        
+        <span class="close-link" onclick="closeModal()">Kembali ke Katalog</span>
     </div>
+</div>
 
-    <script>
-        // Sembunyikan semua page kecuali page 1 di awal
-        document.getElementById('page-2').style.display = 'none';
+<script>
+    // List 17 Produk Kamu
+    const apps = [
+        { n: "📢 Jasa Promosi (JPM)", id: "jpm", v: ["3 Hari|3K", "1 Minggu|5K"] },
+        { n: "🤖 Sewa Bot Grub", id: "bot", v: ["1 Minggu|3K", "1 Bulan|10K"] },
+        { n: "🖥️ Panel Pterodactyl", id: "pnl", v: ["1 GB|5K", "5 GB|15K", "Unlimited|25K"] },
+        { n: "📱 Nokos WhatsApp", id: "nks", v: ["No Garansi|5K"] },
+        { n: "🌐 VPN Bulanan", id: "vpn", v: ["Express|12K", "HMA|10K", "Surfshark|20K"] },
+        { n: "🎨 Canva Pro", id: "cnv", v: ["1 Bulan|3K", "Lifetime|15K"] },
+        { n: "🎬 Capcut Private", id: "cpt", v: ["1 Minggu|2K", "2 Minggu|3K", "1 Bulan|5K"] },
+        { n: "📽️ AM Private", id: "am", v: ["1 Tahun Private|3K"] },
+        { n: "🧠 Gemini AI", id: "gmn", v: ["1 Bulan|5K"] },
+        { n: "💬 ChatGPT Private", id: "gpt", v: ["1 Bulan|17K"] },
+        { n: "🎥 Youtube Invite", id: "yt", v: ["1 Bulan|5K"] },
+        { n: "🎵 Spotify Private", id: "spt", v: ["1 Bulan|20K"] },
+        { n: "🍿 Netflix Bulanan", id: "nfx", v: ["1p1u|25K", "1p2u|15K", "Semi Private|30K"] },
+        { n: "🍱 Viu Generator", id: "viu", v: ["1 Tahun Private|3K"] },
+        { n: "📞 Zoom Private", id: "zm", v: ["2 Minggu|5K"] },
+        { n: "📚 Scribd Private", id: "scb", v: ["1 Bulan|10K"] },
+        { n: "💼 Microsoft 365", id: "ms", v: ["Famplan|10K", "Famhead|15K", "Indplan|17K"] }
+    ];
 
-        function showPage(num) {
-            document.getElementById('page-1').style.display = 'none';
-            document.getElementById('page-2').style.display = 'flex';
-        }
+    // Generate Card Otomatis
+    const grid = document.getElementById('productGrid');
+    apps.forEach(app => {
+        let options = app.v.map(opt => `<option value="${opt}">${opt.replace('|', ' - ')}</option>`).join('');
+        grid.innerHTML += `
+            <div class="card">
+                <h3>${app.n}</h3>
+                <select id="${app.id}">${options}</select>
+                <button class="btn-order" onclick="pay('${app.n}', '${app.id}')">BELI SEKARANG</button>
+            </div>
+        `;
+    });
 
-        function dodge() {
-            const btn = document.getElementById('btn-no');
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            btn.style.position = 'fixed';
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
-        }
+    function pay(nama, id) {
+        const sel = document.getElementById(id);
+        const [ver, hrg] = sel.value.split('|');
+        
+        document.getElementById('desc').innerText = `${nama} (${ver}) — ${hrg}`;
+        
+        const wa = "6285647652481";
+        const msg = `Halo Admin Yazstore,%0A%0ASaya ingin membeli:%0AProduk: ${nama}%0AVersi: ${ver}%0AJumlah: 1%0AHarga: ${hrg}%0A%0ASaya sudah transfer via QRIS. Mohon segera diproses!`;
+        
+        // Update Link WA
+        document.getElementById('waLink').href = `https://wa.me/${wa}?text=${msg}`;
+        
+        // Tampilkan Modal
+        document.getElementById('paymentModal').style.display = "block";
+    }
 
-        function startSurprise() {
-            document.getElementById('page-2').style.display = 'none';
-            document.body.style.display = 'block'; // Agar bisa scroll
-            document.body.style.overflowY = 'auto';
-            document.body.style.backgroundColor = '#fff5f5';
-            const final = document.getElementById('page-final');
-            final.style.display = 'block';
-            
-            createHearts();
-        }
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = "none";
+    }
 
-        function createHearts() {
-            setInterval(() => {
-                const h = document.createElement('div');
-                h.className = 'floating-heart';
-                h.innerHTML = ['❤️','💖','🌸','🎀','✨'][Math.floor(Math.random()*5)];
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.bottom = '-20px';
-                h.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                document.body.appendChild(h);
-                setTimeout(() => h.remove(), 4000);
-            }, 300);
-        }
+    // Tutup modal jika klik di luar kotak
+    window.onclick = function(e) {
+        if (e.target == document.getElementById('paymentModal')) closeModal();
+    }
+</script>
 
-        // Hiasan Bintang Statis
-        for(let i=0; i<15; i++) {
-            const star = document.createElement('div');
-            star.innerHTML = '✨';
-            star.style.position = 'fixed';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.opacity = '0.3';
-            star.style.fontSize = '20px';
-            document.getElementById('decorations').appendChild(star);
-        }
-    </script>
 </body>
 </html>
